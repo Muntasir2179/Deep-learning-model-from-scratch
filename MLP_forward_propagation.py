@@ -1,4 +1,5 @@
 import numpy as np
+from random import random
 
 
 '''
@@ -109,11 +110,28 @@ class MLP:
             weights = self.weights[i]
             # print('Original W{} {}'.format(i, weights))
             derivatives = self.derivatives[i]
-            weights = weights + (derivatives * learning_rate)
+            weights += derivatives * learning_rate
             # print('Updated W{} {}'.format(i, weights))
 
+    def train(self, inputs, targets, epochs, learning_rate):
+        for i in range(1, epochs+1):
+            sum_error = 0
+            for input, target in zip(inputs, targets):
+                output = self.forward_propagate(input)
+                error = target - output
+                self.back_propagate(error)
+                self.gradient_descent(learning_rate)
+
+                sum_error += self._mse(target, output)
+
+            # report error
+            print('Error: {} at epoch {}'.format(sum_error/len(inputs), i))
+
+    def _mse(self, target, output):
+        return np.average((target - output)**2)
+
     def _sigmoid(self, x):
-        return 1 / (1 + np.exp(-x))
+        return 1.0 / (1 + np.exp(-x))
 
     def _sigmoid_derivative(self, x):
         # s'(h_[i+1]) = s(h_[i+1]) (1 - s(h_[i+1]))
@@ -123,21 +141,15 @@ class MLP:
 
 if __name__ == '__main__':
 
+    # create a dataset to train a neural network for the sum operation
+    # array([[0.1, 0.2], [0.3, 0.4]])
+    inputs = np.array([[random() / 2 for _ in range(2)] for _ in range(1000)])
+
+    # array([[0.3], [0.7]])
+    targets = np.array([[i[0] + i[1]] for i in inputs])
+
     # create an MLP
     mlp = MLP(2, [5], 1)
 
-    # create dummy data
-    input = np.array([0.1, 0.2])
-    target = np.array([0.3])
-
-    # forward propagation
-    output = mlp.forward_propagate(input)
-
-    # calculate error
-    error = target - output
-
-    # back propagation
-    mlp.back_propagate(error)
-
-    # apply gradient descent
-    mlp.gradient_descent(learning_rate=1)
+    # train our MLP
+    mlp.train(inputs, targets, 50, 0.1)
