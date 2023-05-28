@@ -153,3 +153,13 @@ if __name__ == '__main__':
 
     # train our MLP
     mlp.train(inputs, targets, 50, 0.1)
+
+    # making predictions
+    x = np.array([0.3, 0.1])
+    y = np.array([0.4])
+
+    print()
+    print()
+    print('MLP network believes that {} + {} is equal to {}'.format(
+        x[0], x[1], mlp.forward_propagate(x)))
+    print()
