@@ -104,6 +104,14 @@ class MLP:
                 print('Derivatives for W{}: {}'.format(i, self.derivatives[i]))
         return error
 
+    def gradient_descent(self, learning_rate):
+        for i in range(len(self.weights)):
+            weights = self.weights[i]
+            # print('Original W{} {}'.format(i, weights))
+            derivatives = self.derivatives[i]
+            weights = weights + (derivatives * learning_rate)
+            # print('Updated W{} {}'.format(i, weights))
+
     def _sigmoid(self, x):
         return 1 / (1 + np.exp(-x))
 
@@ -129,4 +137,7 @@ if __name__ == '__main__':
     error = target - output
 
     # back propagation
-    mlp.back_propagate(error, verbose=True)
+    mlp.back_propagate(error)
+
+    # apply gradient descent
+    mlp.gradient_descent(learning_rate=1)
