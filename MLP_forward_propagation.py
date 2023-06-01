@@ -152,7 +152,7 @@ if __name__ == '__main__':
     mlp = MLP(2, [5], 1)
 
     # train our MLP
-    mlp.train(inputs, targets, 50, 0.1)
+    mlp.train(inputs=inputs, targets=targets, epochs=50, learning_rate=0.1)
 
     # making predictions
     x = np.array([0.3, 0.1])
